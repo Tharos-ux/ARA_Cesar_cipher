@@ -8,7 +8,6 @@ backgroundColor: #fff
 
 ## Introduction
 + Crypto symétrique
-## COUCOU LES GENS
 
 ---
 
@@ -47,6 +46,7 @@ encrypt <- function(text, key) {
 
 print(encrypt("zweezweeeezweeee",-6))
 ```
+---
 ## Decoding
 
 ```r
@@ -75,7 +75,7 @@ decrypt_2 <- function(text, key){
 
 print(decrypt_2("sheeeeeeeeeeeeeeesh",3))
 ```
-
+---
 ## Bruteforce decoding
 
 ```r
@@ -89,7 +89,7 @@ unk_decrypt <- function(text) {
 
 print(unk_decrypt("khoor"))
 ```
-
+---
 ## Probability decoding
 
 ```r
@@ -108,6 +108,7 @@ unk_decrypt_2 <- function(text) {
 
 print(unk_decrypt_2(encrypt("sheeeeeeeeeeeeeeeesh",5)))
 ```
+---
 # Limitations
 Tied to our algorithm:
 + Only standard characters are implemented (no space, no special characters, no numbers)
@@ -116,6 +117,7 @@ Tied to our algorithm:
 Tied to the system:
 + We do more or less a number, it's easy to bruteforce!
 + With letter frequency in mind, it's easy to guess what key it is even without running the algorithm.
+---
 # Going further
 ## Possible upgrades to Caesar cipher
 ### Encoding-wise
@@ -125,6 +127,7 @@ Ignoring or havig another table to compare
 We can do a querry against a database with common words from the supposed language, and seek to identifiy some of them in our decoded assertion ; and favor the one from which we can identify numerous words.
 A simple improvment could be done by boosting our 'tries' variable with letters probabilities granted from languages' probability of apparitions.
 
+---
 ## Asymmetric cryptography
 ### Base concept
 Rely on one-ways functions (function that can easily be calculated but hardly reversed) that maintains a hidden flaw (which will be the decoding key).
