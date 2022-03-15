@@ -39,9 +39,7 @@ encrypt <- function(text, key) {
   stext <- strsplit(text, "")[[1]]
   ret = c()
   for(letter in stext){
-    # position de la lettre dans l'alphabet
     index <- match(c(letter),alphabet)
-    # on calcule le nouvel index
     new_index <- index + key
     if(new_index<1) {
       new_index <- new_index + 26
@@ -145,7 +143,7 @@ unk_decrypt_2 <- function(text) {
 [1] "sheeeeeesh" "odaaaaaaod" "gvssssssgv" "wliiiiiiwl" "bqnnnnnnbq"
 ```
 ---
-# Limitations
+# Limitations and upgrades to Caesar cipher (1/2)
 Tied to our algorithm:
 + Only standard characters are implemented
 + We lean on suboptimized structures and language for this usecase
@@ -153,16 +151,63 @@ Tied to our algorithm:
 Tied to the system:
 + We do more or less a number, it's easy to bruteforce!
 + With letter frequency in mind, it's easy to guess.
-
+---
+```r
+encrypt_upgraded <- function(text, key) {
+  stext <- strsplit(tolower(text), "")[[1]]
+  ret = c()
+  for(letter in stext){
+    if(letter %in% alphabet){
+      index <- match(c(letter),alphabet)
+      new_index <- index + key
+      if(new_index<1) { new_index <- new_index + 26 }
+      else if(new_index>26){ new_index <- new_index - 26 }
+      ret <- append(ret,alphabet[new_index])
+    }
+    else { ret <- append(ret,letter) }
+  }
+  paste(ret, collapse = '')
+}
+```
+```r
+> print(encrypt("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+ eiusmod tempor incididunt ut labore et dolore magna aliqua.",4))
+[1] "psviq mtwyq hspsv wmx eqix, gsrwigxixyv ehmtmwgmrk ipmx, wih hs imywqsh xiqtsv
+ mrgmhmhyrx yx pefsvi ix hspsvi qekre epmuye."
+```
 --- 
-# Possible upgrades to Caesar cipher
-## Encoding-wise
-+ Ignoring or havig another table to compare special characters or spaces, punctuation ...
+# Limitations and upgrades to Caesar cipher (2/2)
 
-## Decoding-wise
 + We can do a querry against a database with common words from the supposed language, and seek to identifiy some of them in our decoded assertion ; and favor the one from which we can identify numerous words.
 + A simple improvment could be done by boosting our 'tries' variable with letters probabilities granted from languages' probability of apparitions.
+---
+```r
+languages <- c("french"="etaoi", "english"="esait")
 
+unk_decrypt_2_upgraded <- function(text,esm_language) {
+  res <- c()
+  stext <- strsplit(text, "")[[1]]
+  stext <- stext[stext %in% alphabet]
+  compteur <- as.data.frame(table(stext))
+  most_present <- subset(compteur,compteur$Freq==max(compteur$Freq),select=stext)$stext[1]
+  for(char in strsplit(languages[esm_language], "")[[1]]) {
+    new_dist <- match(c(most_present),alphabet) - match(c(char),alphabet)
+    res <- append(res,decrypt_2_upgraded(text,new_dist))
+  }
+  return(res)
+}
+```
+```r
+> print(encrypt("But I must explain to you how all this mistaken idea [...]",4))
+[1] "fyx m qywx ibtpemr xs csy lsa epp xlmw qmwxeoir mhie [...]"
+
+> print(unk_decrypt_2_upgraded(text,"english"))
+[1] "but i must explain to you how all this mistaken idea [...]"
+[2] "pih w aigh sldzowb hc mci vck ozz hvwg awghoysb wrso [...]"
+[3] "xqp e iqop atlhwej pk ukq dks whh pdeo ieopwgaj ezaw [...]"
+[4] "fyx m qywx ibtpemr xs csy lsa epp xlmw qmwxeoir mhie [...]"
+[5] "qji x bjhi tmeapxc id ndj wdl paa iwxh bxhipztc xstp [...]"
+```
 ---
 # Asymmetric cryptography
 Rely on one-ways functions (function that can easily be calculated but hardly reversed) that maintains a hidden flaw (which will be the decoding key).
