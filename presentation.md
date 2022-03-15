@@ -153,8 +153,6 @@ Tied to our algorithm:
 Tied to the system:
 + We do more or less a number, it's easy to bruteforce!
 + With letter frequency in mind, it's easy to guess.
----
-# Going further
 
 --- 
 # Possible upgrades to Caesar cipher
